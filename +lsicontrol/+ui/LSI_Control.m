@@ -51,7 +51,7 @@ classdef LSI_Control < mic.Base
         uiDeviceArrayPinholeStage
         uiDeviceArrayWaferStage
         uiDeviceArrayGratingStage
-     
+        uiDeviceArrayDiodeStage
 
         
         % Lock reticle
@@ -139,7 +139,7 @@ classdef LSI_Control < mic.Base
         uicPinholeStageConfigs  = cell(1,3)
         uicWaferStageConfigs = cell(1,3)
         uicGratingStageConfigs = cell(1,2)
-        uicDiodeStageConfids = cell(1,1)
+        uicDiodeStageConfigs = cell(1,1)
 
         uiDeviceMode
         uiDeviceAwesome
@@ -506,31 +506,37 @@ classdef LSI_Control < mic.Base
             end
 
             %ZTS2 ------
-            for k = 1:length(this.uicHexapodConfigs)
-                this.uicWConfigs{k} = mic.config.GetSetNumber(...
-                    'cPath', fullfile(this.cConfigPath, sprintf('wafer%d.json', k))...
+            for k = 1:length(this.uicTurningMirrorStageConfigs)
+                this.uicTurningMirrorStageConfigs{k} = mic.config.GetSetNumber(...
+                    'cPath', fullfile(this.cConfigPath, sprintf('turning-mirror-stage-%d.json', k))...
                     );
             end
-            for k = 1:length(this.uicGoniConfigs)
-                this.uicWaferConfigs{k} = mic.config.GetSetNumber(...
-                    'cPath', fullfile(this.cConfigPath, sprintf('wafer%d.json', k))...
+
+            for k = 1:length(this.uicPinholeStageConfigs)
+                this.uicPinholeStageConfigs{k} = mic.config.GetSetNumber(...
+                    'cPath', fullfile(this.cConfigPath, sprintf('pinhole-stage-%d.json', k))...
                     );
             end
-            for k = 1:length(this.uicReticleConfigs)
-                this.uicWaferConfigs{k} = mic.config.GetSetNumber(...
-                    'cPath', fullfile(this.cConfigPath, sprintf('wafer%d.json', k))...
+
+            for k = 1:length(uicWaferStageConfigs)
+                this.uicWaferStageConfigs{k} = mic.config.GetSetNumber(...
+                    'cPath', fullfile(this.cConfigPath, sprintf('wafer-stage-%d.json', k))...
                     );
             end
-            for k = 1:length(this.uicWaferConfigs)
-                this.uicWaferConfigs{k} = mic.config.GetSetNumber(...
-                    'cPath', fullfile(this.cConfigPath, sprintf('wafer%d.json', k))...
+
+            for k = 1:length(this.uicGratingStageConfigs)
+                this.uicGratingStageConfigs{k} = mic.config.GetSetNumber(...
+                    'cPath', fullfile(this.cConfigPath, sprintf('grating-stage-%d.json', k))...
                     );
             end
-            for k = 1:length(this.uicWaferConfigs)
-                this.uicWaferConfigs{k} = mic.config.GetSetNumber(...
-                    'cPath', fullfile(this.cConfigPath, sprintf('wafer%d.json', k))...
+
+            for k = 1:length(this.uicDiodeStageConfigs)
+                this.uicDiodeStageConfigs{k} = mic.config.GetSetNumber(...
+                    'cPath', fullfile(this.cConfigPath, sprintf('diode-stage-%d.json', k))...
                     );
             end
+           
+            
             
             this.uicTemperatureConfig = mic.config.GetSetNumber(...
                     'cPath', fullfile(this.cConfigPath, 'temp.json')...
@@ -2201,7 +2207,7 @@ classdef LSI_Control < mic.Base
                  end
              end
         end
-        
+
 %% Reticle lock:
 function setLockState(this)
     % First check if we have access to ppmac and mfdriftmonitor
@@ -3149,47 +3155,84 @@ end
              % Build comms and axes
             this.uiCommSmarActSmarPod.build(this.hpStageControls, dLeft, dAxisPos - 7);
             this.uibHomeHexapod.build(this.hpStageControls, dLeft + 340, dAxisPos - 5, 95, 20);
+
+            % Build Turning mirror stage
+            this.uiCommTurningMirrorStage.build(this.hpStageControls, dLeft, dAxisPos);
             dAxisPos = dAxisPos + 20;
-            for k = 1:length(this.cHexapodAxisLabels)
-                this.uiDeviceArrayHexapod{k}.build(this.hpStageControls, ...
+            for k = 1:length(this.cTurningMirrorStageLabels)
+                this.uiDeviceArrayTurningMirrorStage{k}.build(this.hpStageControls, ...
                     dLeft, dAxisPos);
                 dAxisPos = dAxisPos + this.dMultiAxisSeparation;
             end
             dAxisPos = dAxisPos + 20;
+
+            % Build Pinhole Stage
+            this.uiCommPinholeStage.build(this.hpStageControls, dLeft, dAxisPos);
+            dAxisPos = dAxisPos + 20;
+            for k = 1:length(this.cPinholeStageLabels)
+                this.uiDeviceArrayPinholeStage{k}.build(this.hpStageControls, ...
+                    dLeft, dAxisPos);
+                dAxisPos = dAxisPos + this.dMultiAxisSeparation;
+            end
+            dAxisPos = dAxisPos + 20;
+
+            % Build wafer stage
+            this.uiCommWaferStage.build(this.hpStageControls, dLeft, dAxisPos);
+            dAxisPos = dAxisPos + 20;
+            for k = 1:length(this.cWaferStageLabels)
+                this.uiDeviceArrayWaferStage{k}.build(this.hpStageControls, ...
+                    dLeft, dAxisPos);
+                dAxisPos = dAxisPos + this.dMultiAxisSeparation;
+            end
+            dAxisPos = dAxisPos + 20;
+
+            % Build Grating stage
+            this.uiCommGratingStage.build(this.hpStageControls, dLeft, dAxisPos);
+            dAxisPos = dAxisPos + 20;
+            for k = 1:length(this.cGratingStageLabels)
+                this.uiDeviceArrayGratingStage{k}.build(this.hpStageControls, ...
+                    dLeft, dAxisPos);
+                dAxisPos = dAxisPos + this.dMultiAxisSeparation;
+            end
+            dAxisPos = dAxisPos + 20;
+
+
+
+            % build grating stage
+
+            % Build Hexapod
+            % dAxisPos = dAxisPos + 20;
+            % for k = 1:length(this.cHexapodAxisLabels)
+            %     this.uiDeviceArrayHexapod{k}.build(this.hpStageControls, ...
+            %         dLeft, dAxisPos);
+            %     dAxisPos = dAxisPos + this.dMultiAxisSeparation;
+            % end
+            % dAxisPos = dAxisPos + 20;
             
-            % Don't build goni stuff for now
-%             this.uiCommSmarActMcsGoni.build(this.hpStageControls,  dLeft, dAxisPos - 7);
-%             this.uibHomeGoni.build(this.hpStageControls, dLeft + 340, dAxisPos - 5, 95, 20);
-%             dAxisPos = dAxisPos + 20;
-%             for k = 1:length(this.cGoniLabels)
-%                 this.uiDeviceArrayGoni{k}.build(this.hpStageControls, ...
-%                     dLeft, dAxisPos);
-%                 dAxisPos = dAxisPos + this.dMultiAxisSeparation;
-%             end
 
             % PPMac reticle and wafer
-            dAxisPos = dAxisPos + 20;
-            for k = 1:length(this.cReticleLabels)
-                this.uiDeviceArrayReticle{k}.build(this.hpStageControls, ...
-                    dLeft, dAxisPos);
-                if (k == 3)
-                    this.uipLRDisableZ = uipanel(...
-                        'Parent', this.hpStageControls,...
-                        'Units', 'pixels',...
-                        'FontWeight', 'Bold',...
-                        'Clipping', 'on',...
-                        'BorderWidth',0, ...
-                        'BackgroundColor',  [1 0.300 0.300, 0.3], ...
-                        'Visible', 'off', ...
-                        'Position', [dLeft, 5+ this.hpStageControls.Position(4) - dAxisPos - this.dMultiAxisSeparation...
-                        , 25, 25] ...
-                        );
-                end
-                if (k == 5)
-                    dAxisPos = dAxisPos + this.dMultiAxisSeparation/2;
-                end
-                dAxisPos = dAxisPos + this.dMultiAxisSeparation;
-            end
+            % dAxisPos = dAxisPos + 20;
+            % for k = 1:length(this.cReticleLabels)
+            %     this.uiDeviceArrayReticle{k}.build(this.hpStageControls, ...
+            %         dLeft, dAxisPos);
+            %     if (k == 3)
+            %         this.uipLRDisableZ = uipanel(...
+            %             'Parent', this.hpStageControls,...
+            %             'Units', 'pixels',...
+            %             'FontWeight', 'Bold',...
+            %             'Clipping', 'on',...
+            %             'BorderWidth',0, ...
+            %             'BackgroundColor',  [1 0.300 0.300, 0.3], ...
+            %             'Visible', 'off', ...
+            %             'Position', [dLeft, 5+ this.hpStageControls.Position(4) - dAxisPos - this.dMultiAxisSeparation...
+            %             , 25, 25] ...
+            %             );
+            %     end
+            %     if (k == 5)
+            %         dAxisPos = dAxisPos + this.dMultiAxisSeparation/2;
+            %     end
+            %     dAxisPos = dAxisPos + this.dMultiAxisSeparation;
+            % end
             
             dAxisPos = dAxisPos + this.dMultiAxisSeparation/2;
             for k = 1:length(this.cWaferLabels)
