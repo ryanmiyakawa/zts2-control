@@ -72,6 +72,9 @@ classdef LSI_Control < mic.Base
         oHexapodBridges
         oGoniBridges
         oReticleBridges
+
+        oTurningMirrorBridges
+
         
 
         uibHomeHexapod
@@ -133,10 +136,10 @@ classdef LSI_Control < mic.Base
         uicExposureConfig
 
         uicTurningMirrorStageConfigs = cell(1,2)
-        uicPinholeStageConfigs  = cell(1,2)
-        uicWaferStageConfigs = cell(1,2)
+        uicPinholeStageConfigs  = cell(1,3)
+        uicWaferStageConfigs = cell(1,3)
         uicGratingStageConfigs = cell(1,2)
-        uicDiodeStageConfids = cell(1,2)
+        uicDiodeStageConfids = cell(1,1)
 
         uiDeviceMode
         uiDeviceAwesome
@@ -503,27 +506,27 @@ classdef LSI_Control < mic.Base
             end
 
             %ZTS2 ------
-            for k = 1:2
+            for k = 1:length(this.uicHexapodConfigs)
                 this.uicWConfigs{k} = mic.config.GetSetNumber(...
                     'cPath', fullfile(this.cConfigPath, sprintf('wafer%d.json', k))...
                     );
             end
-            for k = 1:4
+            for k = 1:length(this.uicGoniConfigs)
                 this.uicWaferConfigs{k} = mic.config.GetSetNumber(...
                     'cPath', fullfile(this.cConfigPath, sprintf('wafer%d.json', k))...
                     );
             end
-            for k = 1:4
+            for k = 1:length(this.uicReticleConfigs)
                 this.uicWaferConfigs{k} = mic.config.GetSetNumber(...
                     'cPath', fullfile(this.cConfigPath, sprintf('wafer%d.json', k))...
                     );
             end
-            for k = 1:4
+            for k = 1:length(this.uicWaferConfigs)
                 this.uicWaferConfigs{k} = mic.config.GetSetNumber(...
                     'cPath', fullfile(this.cConfigPath, sprintf('wafer%d.json', k))...
                     );
             end
-            for k = 1:4
+            for k = 1:length(this.uicWaferConfigs)
                 this.uicWaferConfigs{k} = mic.config.GetSetNumber(...
                     'cPath', fullfile(this.cConfigPath, sprintf('wafer%d.json', k))...
                     );
@@ -568,6 +571,70 @@ classdef LSI_Control < mic.Base
                     'config', this.uicGoniConfigs{k} ...
                     );
            end
+
+
+           % ZTS2 ------
+
+          
+
+              for k = 1:length(this.cTurningMirrorStageLabels)
+                    this.uiDeviceArrayTurningMirrorStage{k} = mic.ui.device.GetSetNumber( ...
+                        'cName', this.cTurningMirrorStageLabels{k}, ...
+                        'clock', this.clock, ...
+                        'cLabel', this.cTurningMirrorStageLabels{k}, ...
+                        'lShowLabels', false, ...
+                        'lShowStores', false, ...
+                        'lValidateByConfigRange', true, ...
+                        'config', this.uicTurningMirrorStageConfigs{k} ...
+                        );
+                end
+            
+                for k = 1:length(this.cPinholeStageLabels)
+                    this.uiDeviceArrayPinholeStage{k} = mic.ui.device.GetSetNumber( ...
+                        'cName', this.cPinholeStageLabels{k}, ...
+                        'clock', this.clock, ...
+                        'cLabel', this.cPinholeStageLabels{k}, ...
+                        'lShowLabels', false, ...
+                        'lShowStores', false, ...
+                        'lValidateByConfigRange', true, ...
+                        'config', this.uicPinholeStageConfigs{k} ...
+                        );
+                end
+            for k = 1:length(this.cWaferStageLabels)
+                this.uiDeviceArrayWaferStage{k} = mic.ui.device.GetSetNumber( ...
+                    'cName', this.cWaferStageLabels{k}, ...
+                    'clock', this.clock, ...
+                    'cLabel', this.cWaferStageLabels{k}, ...
+                    'lShowLabels', false, ...
+                    'lShowStores', false, ...
+                    'lValidateByConfigRange', true, ...
+                    'config', this.uicWaferStageConfigs{k} ...
+                    );
+            end
+            for k = 1:length(this.cGratingStageLabels)
+                this.uiDeviceArrayGratingStage{k} = mic.ui.device.GetSetNumber( ...
+                    'cName', this.cGratingStageLabels{k}, ...
+                    'clock', this.clock, ...
+                    'cLabel', this.cGratingStageLabels{k}, ...
+                    'lShowLabels', false, ...
+                    'lShowStores', false, ...
+                    'lValidateByConfigRange', true, ...
+                    'config', this.uicGratingStageConfigs{k} ...
+                    );
+            end
+            for k = 1:length(this.cDiodeStageLabels)
+                this.uiDeviceArrayDiodeStage{k} = mic.ui.device.GetSetNumber( ...
+                    'cName', this.cDiodeStageLabels{k}, ...
+                    'clock', this.clock, ...
+                    'cLabel', this.cDiodeStageLabels{k}, ...
+                    'lShowLabels', false, ...
+                    'lShowStores', false, ...
+                    'lValidateByConfigRange', true, ...
+                    'config', this.uicDiodeStageConfigs{k} ...
+                    );
+            end
+
+
            
                        
             
@@ -854,6 +921,23 @@ classdef LSI_Control < mic.Base
             );
             this.uibHomeGoni = mic.ui.common.Button(...
                 'cText', 'Home Goni' , 'fhDirectCallback', @(src,evt)this.homeGoni ...
+            );
+
+            this.uibHomeTurningMirrorStage = mic.ui.common.Button(...
+                'cText', 'Home Turning Mirror Stage' , 'fhDirectCallback', @(src,evt)this.homeTurningMirrorStage ...
+            );
+            this.uibHomePinholeStage = mic.ui.common.Button(...
+                'cText', 'Home Pinhole Stage' , 'fhDirectCallback', @(src,evt)this.homePinholeStage ...
+            );
+            this.uibHomeWaferStage = mic.ui.common.Button(...
+                'cText', 'Home Wafer Stage' , 'fhDirectCallback', @(src,evt)this.homeWaferStage ...
+            );
+
+            this.uibHomeGratingStage = mic.ui.common.Button(...
+                'cText', 'Home Grating Stage' , 'fhDirectCallback', @(src,evt)this.homeGratingStage ...
+            );
+            this.uibHomeDiodeStage = mic.ui.common.Button(...
+                'cText', 'Home Diode Stage' , 'fhDirectCallback', @(src,evt)this.homeDiodeStage ...
             );
 
             this.uiSLHexapod = mic.ui.common.PositionRecaller(...
@@ -1187,6 +1271,197 @@ classdef LSI_Control < mic.Base
             % Delete the Stage API
             this.apiCamera = [];
         end
+
+
+        function setTurningMirrorStageDeviceAndEnable(this, device)
+             % Instantiate javaStageAPIs for communicating with devices
+             this.apiTurningMirrorStage 	= lsicontrol.smarActAPI.CXROJavaStageAPI(...
+             'jStage', device);
+
+            % Check if we need to index stage:
+            if (~this.apiTurningMirrorStage.isInitialized())
+                if strcmp(questdlg('Turning Mirror is not referenced. Index now?'), 'Yes')
+                    this.apiTurningMirrorStage.home();
+                    % Wait till Turning mirror has finished move:
+                    dafTurningMirrorHome = mic.DeferredActionScheduler(...
+                        'clock', this.clock, ...
+                        'fhAction', @()this.setTurningMirrorStageDeviceAndEnable(device),...
+                        'fhTrigger', @()this.apiTurningMirrorStage.isInitialized(),...
+                        'cName', 'DASTurningMirrorIndexing', ...
+                        'dDelay', 0.5, ...
+                        'dExpiration', 10, ...
+                        'lShowExpirationMessage', true);
+                    dafTurningMirrorHome.dispatch();
+                end
+
+                return % Return in either case, only proceed if initialized
+            end
+
+            % Use coupled-axis bridge to create single axis control
+            % dSubR = [0 -1 0 ; -1 0 0; 0 0 1];
+            % dR = [dSubR, zeros(3); zeros(3), dSubR];  
+            for k = 1:length(uicTurningMirrorStageConfigs);
+                this.uiDeviceArrayTurningMirror{k}.setDevice(this.apiTurningMirrorStage{k});
+                this.uiDeviceArrayTurningMirror{k}.turnOn();
+                this.uiDeviceArrayTurningMirror{k}.syncDestination();
+            end
+        end
+
+        % Resets api, bridges, and disconnects hardware device.
+        function disconnectTurningMirrorStage(this)
+            for k = 1:length(uicTurningMirrorStageConfigs);
+                this.uiDeviceArrayTurningMirror{k}.turnOff();
+                this.uiDeviceArrayTurningMirror{k}.setDevice([]);
+            end
+            
+            % Disconnect the stage:
+            this.apiTurningMirrorStage.disconnect();
+            
+            % Delete the Stage API
+            this.apiTurningMirrorStage = [];
+        end
+
+        function setPinholeStageDeviceAndEnable(this, device)
+            % Instantiate javaStageAPIs for communicating with devices
+            this.apiPinholeStage 	= lsicontrol.smarActAPI.CXROJavaStageAPI(...
+            'jStage', device);
+
+            % Check if we need to index stage:
+            if (~this.apiPinholeStageStage.isInitialized())
+            if strcmp(questdlg('Pinhole stage is not referenced. Index now?'), 'Yes')
+                this.apiPinholeStageStage.home();
+                % Wait for finished move:
+                dafPinholeHome = mic.DeferredActionScheduler(...
+                    'clock', this.clock, ...
+                    'fhAction', @()this.setPinholeStageDeviceAndEnable(device),...
+                    'fhTrigger', @()this.apiPinholeStage.isInitialized(),...
+                    'cName', 'DASPinholeIndexing', ...
+                    'dDelay', 0.5, ...
+                    'dExpiration', 10, ...
+                    'lShowExpirationMessage', true);
+                dafPinholeHome.dispatch();
+            end
+
+            return % Return in either case, only proceed if initialized
+            end
+
+            % Use coupled-axis bridge to create single axis control
+            % dSubR = [0 -1 0 ; -1 0 0; 0 0 1];
+            % dR = [dSubR, zeros(3); zeros(3), dSubR];  
+            for k = 1:6
+                this.uiDeviceArrayPinholeStage{k}.setDevice(this.apiPinholeStageStage{k});
+                this.uiDeviceArrayPinholeStage{k}.turnOn();
+                this.uiDeviceArrayPinholeStage{k}.syncDestination();
+            end
+        end
+
+        function disconnectPinholeStage(this)
+            for k = 1:length(uicPinholeStageConfigs);
+                this.uiDeviceArrayPinholeStage{k}.turnOff();
+                this.uiDeviceArrayPinholeStage{k}.setDevice([]);
+            end
+            
+            % Disconnect the stage:
+            this.apiPinholeStage.disconnect();
+            
+            % Delete the Stage API
+            this.apiPinholeStage = [];
+        end
+
+        function setWaferStageDeviceAndEnable(this, device)
+            % Instantiate javaStageAPIs for communicating with devices
+            this.apiWaferStage 	= lsicontrol.smarActAPI.CXROJavaStageAPI(...
+            'jStage', device);
+
+            % Check if we need to index stage:
+            if (~this.apiWaferStageStage.isInitialized())
+            if strcmp(questdlg('Wafer stage is not referenced. Index now?'), 'Yes')
+                this.apiWaferStageStage.home();
+                % Wait for finished move:
+                dafWaferHome = mic.DeferredActionScheduler(...
+                    'clock', this.clock, ...
+                    'fhAction', @()this.setWaferStageDeviceAndEnable(device),...
+                    'fhTrigger', @()this.apiWaferStage.isInitialized(),...
+                    'cName', 'DASWaferIndexing', ...
+                    'dDelay', 0.5, ...
+                    'dExpiration', 10, ...
+                    'lShowExpirationMessage', true);
+                dafWaferHome.dispatch();
+            end
+
+            return % Return in either case, only proceed if initialized
+            end
+
+            % Use coupled-axis bridge to create single axis control
+            % dSubR = [0 -1 0 ; -1 0 0; 0 0 1];
+            % dR = [dSubR, zeros(3); zeros(3), dSubR];  
+            for k = 1:6
+                this.uiDeviceArrayWaferStage{k}.setDevice(this.apiWaferStageStage{k});
+                this.uiDeviceArrayWaferStage{k}.turnOn();
+                this.uiDeviceArrayWaferStage{k}.syncDestination();
+            end
+        end
+
+        function disconnectWaferStage(this)
+            for k = 1:length(uicWaferStageConfigs);
+                this.uiDeviceArrayWaferStage{k}.turnOff();
+                this.uiDeviceArrayWaferStage{k}.setDevice([]);
+            end
+            
+            % Disconnect the stage:
+            this.apiWaferStage.disconnect();
+            
+            % Delete the Stage API
+            this.apiWaferStage = [];
+        end
+
+
+        function setGratingStageDeviceAndEnable(this, device)
+            % Instantiate javaStageAPIs for communicating with devices
+            this.apiGratingStage 	= lsicontrol.smarActAPI.CXROJavaStageAPI(...
+            'jStage', device);
+
+            % Check if we need to index stage:
+            if (~this.apiGratingStageStage.isInitialized())
+            if strcmp(questdlg('Grating stage is not referenced. Index now?'), 'Yes')
+                this.apiGratingStageStage.home();
+                % Wait for finished move:
+                dafGratingHome = mic.DeferredActionScheduler(...
+                    'clock', this.clock, ...
+                    'fhAction', @()this.setGratingStageDeviceAndEnable(device),...
+                    'fhTrigger', @()this.apiGratingStage.isInitialized(),...
+                    'cName', 'DASGratingIndexing', ...
+                    'dDelay', 0.5, ...
+                    'dExpiration', 10, ...
+                    'lShowExpirationMessage', true);
+                dafGratingHome.dispatch();
+            end
+
+            return % Return in either case, only proceed if initialized
+            end
+
+            % Use coupled-axis bridge to create single axis control
+            % dSubR = [0 -1 0 ; -1 0 0; 0 0 1];
+            % dR = [dSubR, zeros(3); zeros(3), dSubR];  
+            for k = 1:6
+                this.uiDeviceArrayGratingStage{k}.setDevice(this.apiGratingStageStage{k});
+                this.uiDeviceArrayGratingStage{k}.turnOn();
+                this.uiDeviceArrayGratingStage{k}.syncDestination();
+            end
+        end
+
+        function disconnectGratingStage(this)
+            for k = 1:length(uicGratingStageConfigs);
+                this.uiDeviceArrayGratingStage{k}.turnOff();
+                this.uiDeviceArrayGratingStage{k}.setDevice([]);
+            end
+            
+            % Disconnect the stage:
+            this.apiGratingStage.disconnect();
+            
+            % Delete the Stage API
+            this.apiGratingStage = [];
+        end
         
         
 
@@ -1287,31 +1562,7 @@ classdef LSI_Control < mic.Base
             this.apiGoni = [];
         end
         
-%         function setReticleAxisDevice(this, device, index)
-%             this.uiDeviceArrayReticle{index}.setDevice(device);
-%             this.uiDeviceArrayReticle{index}.turnOn();
-%             this.uiDeviceArrayReticle{index}.syncDestination();
-%         end
-%         
-%         
-%         function disconnectReticleAxisDevice(this, index)
-%             this.uiDeviceArrayReticle{index}.turnOff();
-%             this.uiDeviceArrayReticle{index}.setDevice([]);
-%         end
-%         
-%         function setWaferAxisDevice(this, device, index)
-%             this.uiDeviceArrayWafer{index}.setDevice(device);
-%             this.uiDeviceArrayWafer{index}.turnOn();
-%             this.uiDeviceArrayWafer{index}.syncDestination();
-%         end
-%         
-%         
-%         function disconnectWaferAxisDevice(this, index)
-%             this.uiDeviceArrayWafer{index}.turnOff();
-%             this.uiDeviceArrayWafer{index}.setDevice([]);
-%         end
-        
-%% IMAGE ACQUISITION
+
         
 
         % Callback for what to do when image is ready from camera
@@ -1846,6 +2097,34 @@ classdef LSI_Control < mic.Base
                 this.uiDeviceArrayReticle{k}.syncDestination();
             end
         end
+
+        function syncTurningMirrorStageDestinations(this)
+            % Sync edit boxes
+            for k = 1:length(this.cTurningMirrorStageLabels)
+                this.uiDeviceArrayTurningMirrorStage{k}.syncDestination();
+            end
+        end
+
+        function syncPinholeStageDestinations(this)
+            % Sync edit boxes
+            for k = 1:length(this.cPinholeStageLabels)
+                this.uiDeviceArrayPinholeStage{k}.syncDestination();
+            end
+        end
+
+        function syncWaferStageDestinations(this)
+            % Sync edit boxes
+            for k = 1:length(this.cWaferStageLabels)
+                this.uiDeviceArrayWafer{k}.syncDestination();
+            end
+        end
+
+        function syncGratingStageDestinations(this)
+            % Sync edit boxes
+            for k = 1:length(this.cGratingStageLabels)
+                this.uiDeviceArrayGrating{k}.syncDestination();
+            end
+        end
         
         
         % Sets the raw positions to hexapod.  Used as a handler for
@@ -1922,6 +2201,7 @@ classdef LSI_Control < mic.Base
                  end
              end
         end
+        
 %% Reticle lock:
 function setLockState(this)
     % First check if we have access to ppmac and mfdriftmonitor
