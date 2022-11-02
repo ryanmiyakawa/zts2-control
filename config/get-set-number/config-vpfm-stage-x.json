@@ -1,0 +1,26 @@
+{
+	"delay": 0.5,
+	"units": [
+		{
+			"name": "mm",
+			"slope": 1,
+			"offset": 0,
+			"precision": 3
+		}
+	],
+    "step": 0.1,
+    "stores": [
+        {
+            "name": "out (14.9)",
+            "raw": 14.9
+        }
+		{
+            "name": "in (yag centered) (-12.25)",
+            "raw": -12.25
+        }
+    ],
+    "min": -14.9,
+    "max": 14.9
+}	
+	
+	

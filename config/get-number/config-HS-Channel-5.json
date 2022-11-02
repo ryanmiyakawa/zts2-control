@@ -1,0 +1,32 @@
+{
+	"delay": 0.5,
+	"units": [
+		{
+			"name": "raw",
+			"slope": 1,
+			"offset": 0,
+			"precision": 3
+		},
+		{
+			"name": "raw X 1e6",
+			"slope": 1000000,
+			"offset": 0,
+			"precision": 3
+		},
+		{
+			"name": "nm",
+			"slope": 0.1,
+			"offset": 0,
+			"precision": 3
+		},
+		{
+			"name": "um",
+			"slope": 0.0001,
+			"offset": 0,
+			"precision": 3
+		}
+
+	]
+}	
+	
+	

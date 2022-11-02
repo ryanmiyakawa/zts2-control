@@ -1,0 +1,30 @@
+{
+	"delay": .5,
+	"units": [
+		{
+			"name": "mm",
+			"slope": 1,
+			"offset": 0,
+			"precision": 3
+		}
+	],
+    "step": 0.15,
+    "stores": [
+        {
+            "name": "MET (40.24)",
+            "raw": 40.24
+        },
+        {
+            "name": "SFPFM (39)",
+            "raw": 39
+        },
+        { 
+            "name": "MET5 (39.75)",
+            "raw": 39.75
+        }
+    ],
+    "min": 10,
+    "max": 50
+}	
+	
+	

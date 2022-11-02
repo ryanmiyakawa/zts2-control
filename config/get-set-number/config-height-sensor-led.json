@@ -1,0 +1,17 @@
+{
+	"delay": 0.5,
+	"units": [
+		{
+			"name": "mA",
+			"slope": 1,
+			"offset": 0,
+			"precision": 0
+		}
+	],
+    "step": 5,
+    "stores": [],
+    "min": 0,
+    "max": 1
+}	
+	
+	

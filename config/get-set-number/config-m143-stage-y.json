@@ -1,0 +1,38 @@
+{
+	"delay": 0.5,
+	"units": [
+		{
+			"name": "mm",
+			"slope": 1,
+			"offset": 0,
+			"precision": 3
+		}
+	],
+    "step": 0.5,
+    "stores": [
+         {
+            "name": "out (0)",
+            "raw": 0
+        },
+        {
+            "name": "DCT mirror (27)",
+            "raw": 27
+        },
+        {
+            "name": "yag (61 was 70)",
+            "raw": 61
+        },
+        {
+            "name": "diode (85)",
+            "raw": 85
+        },
+        {
+            "name": "yag 2022 (95)",
+            "raw": 95
+        }
+    ],
+    "min": 0,
+    "max": 95
+}	
+	
+	
