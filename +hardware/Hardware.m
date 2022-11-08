@@ -31,10 +31,13 @@ classdef Hardware < mic.Base
 	properties
         clock
         
-        
         % {cxro.common.device.motion.Stage 1x1}
         commGratingStage
-        
+        commDiodeStage
+        commPinholeStage
+        commTurningMirrorStage
+        commWaferStage
+
         % Temporarily:{lsicontrol.virtualDevice.virtualPVCam}
         commPIMTECamera
         
@@ -89,6 +92,34 @@ classdef Hardware < mic.Base
      
    
                 
+
+
+
+        % ZTS2 stages
+        function comm = getTurningMirrorStage(this)
+            if this.getIsConnectedTurningMirrorStage()
+                comm = this.commTurningMirrorStage;
+            else
+                comm = this.commTurningMirrorStageVirtual;
+            end            
+        end
+
+        function comm = getPinholeStage(this)
+            if this.getIsConnectedPinholeStage()
+                comm = this.commPinholeStage;
+            else
+                comm = this.commPinholeStageVirtual;
+            end            
+        end
+
+        function comm = getWaferStage(this)
+            if this.getIsConnectedWaferStage()
+                comm = this.commWaferStage;
+            else
+                comm = this.commWaferStageVirtual;
+            end            
+        end
+
         function comm = getGratingStage(this)
             if this.getIsConnectedGratingStage()
                 comm = this.commGratingStage;
@@ -96,6 +127,17 @@ classdef Hardware < mic.Base
                 comm = this.commGratingStageVirtual;
             end            
         end
+
+        function comm = getDiodeStage(this)
+            if this.getIsConnectedDiodeStage()
+                comm = this.commDiodeStage;
+            else
+                comm = this.commDiodeStageVirtual;
+            end            
+        end
+
+
+
         
         
         
@@ -103,7 +145,6 @@ classdef Hardware < mic.Base
         %% MF Drift Monitor (different than MfDriftMonitor Middleware)
         
         function l = getIsConnectedMfDriftMonitor(this)
-           
             if this.notEmptyAndIsA(this.commMfDriftMonitor, 'cxro.met5.device.mfdriftmonitor.MfDriftMonitorCorbaProxy')
                 l = true;
             else
@@ -168,36 +209,6 @@ classdef Hardware < mic.Base
         end
                
         
-        function connectDCTWaferStage(this)
-            
-            if this.getIsConnectedDCTWaferStage()
-                return
-            end
-
-            try
-                this.getjMet5Instruments();
-                this.commDCTWaferStage = this.jMet5Instruments.getDCTWaferStage();
-                this.commDCTWaferStage.connect();
-                
-            catch mE
-                this.commDCTWaferStage = [];
-                this.msg(mE.msgtext, this.u8_MSG_TYPE_ERROR);
-               
-            end
-            
-        end
-        
-        function comm = getDCTWaferStage(this)
-            
-            if this.getIsConnectedDCTWaferStage()
-                comm = this.commDCTWaferStage;
-                return
-            end
-                
-            comm = this.commDCTWaferStageVirtual;
-                
-        end
-
 
 
         function lVal = getIsConnectedKeithley6482Wafer(this)
