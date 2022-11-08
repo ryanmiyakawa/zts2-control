@@ -254,7 +254,7 @@ classdef LSI_Control < mic.Base
     
     properties (Constant)
         dWidth  = 1750;
-        dHeight =  1100;
+        dHeight =  950;
         
         % Camera modes
         U8CAMERA_MODE_ACQUIRE = 0
@@ -264,7 +264,7 @@ classdef LSI_Control < mic.Base
 
         cTurningMirrorStageLabels = {'Rx', 'Ry'}
         cPinholeStageLabels = {'X', 'Y'}
-        cWaferStageLabels = {'X', 'Y'}
+        cWaferStageLabels = {'X', 'Y', 'Z'}
         cGratingStageLabels = {'X', 'Y'}
         cDiodeStageLabels = {'X'}
 
@@ -397,7 +397,7 @@ classdef LSI_Control < mic.Base
                 'cLabel', 'PI-MTE Camera' ...
                 );
            
-                this.uiCommTurningMirrorStage = mic.ui.device.GetSetLogical(...
+            this.uiCommTurningMirrorStage = mic.ui.device.GetSetLogical(...
                 'clock', this.clock, ...
                 'ceVararginCommandToggle', ceVararginCommandToggle, ...
                 'dWidthName', 130, ...
@@ -407,7 +407,7 @@ classdef LSI_Control < mic.Base
                 'cName', 'turning-mirror-stage', ...
                 'cLabel', 'Turning Mirror Stage' ...
                 );
-                this.uiCommPinholeStage = mic.ui.device.GetSetLogical(...
+            this.uiCommPinholeStage = mic.ui.device.GetSetLogical(...
                 'clock', this.clock, ...
                 'ceVararginCommandToggle', ceVararginCommandToggle, ...
                 'dWidthName', 130, ...
@@ -417,7 +417,7 @@ classdef LSI_Control < mic.Base
                 'cName', 'pinhole-stage', ...
                 'cLabel', 'Pinhole Stage' ...
                 );
-                this.uiCommWaferStage = mic.ui.device.GetSetLogical(...
+            this.uiCommWaferStage = mic.ui.device.GetSetLogical(...
                 'clock', this.clock, ...
                 'ceVararginCommandToggle', ceVararginCommandToggle, ...
                 'dWidthName', 130, ...
@@ -427,7 +427,7 @@ classdef LSI_Control < mic.Base
                 'cName', 'wafer-stage', ...
                 'cLabel', 'Wafer Stage' ...
                 );
-                this.uiCommGratingStage = mic.ui.device.GetSetLogical(...
+            this.uiCommGratingStage = mic.ui.device.GetSetLogical(...
                 'clock', this.clock, ...
                 'ceVararginCommandToggle', ceVararginCommandToggle, ...
                 'dWidthName', 130, ...
@@ -437,7 +437,7 @@ classdef LSI_Control < mic.Base
                 'cName', 'grating-stage', ...
                 'cLabel', 'Grating Stage' ...
                 );
-                this.uiCommDiodeStage = mic.ui.device.GetSetLogical(...
+            this.uiCommDiodeStage = mic.ui.device.GetSetLogical(...
                 'clock', this.clock, ...
                 'ceVararginCommandToggle', ceVararginCommandToggle, ...
                 'dWidthName', 130, ...
@@ -2999,6 +2999,8 @@ end
         function build(this)
             
             
+            SECOND_PANE_LEFT = 850;
+
             if ishghandle(this.hFigure)
                 % Bring to front
                 figure(this.hFigure);
@@ -3017,14 +3019,13 @@ end
                     'Resize', 'off',...
                     'HandleVisibility', 'on',... % lets close all close the figure
                     'Visible', 'on',...
-                    'CloseRequestFcn', @this.onCloseRequest ...
                     );
                 
            % Axes:
            
            
            % Main Axes:
-           this.uitgAxes.build(this.hFigure, 880, 215, 860, 885);
+           this.uitgAxes.build(this.hFigure, SECOND_PANE_LEFT, 190, 860, 885);
            this.hsaAxes.build(this.uitgAxes.getTabByName('Camera'), this.hFigure, 10, 10, 810, 720);
             
            
@@ -3079,7 +3080,7 @@ end
                 'FontWeight', 'Bold',...
                 'Clipping', 'on',...
                 'BorderWidth',0, ... 
-                'Position', [10 300 490 770] ...
+                'Position', mic.Utils.lt2lb([10 10 470 590], this.hFigure) ...
             );
         
             % Scan control panel:
@@ -3089,14 +3090,16 @@ end
                 'Title', 'Position recall and coordinate transform',...
                 'FontWeight', 'Bold',...
                 'Clipping', 'on',...
-                'BorderWidth',0, ... 
-                'Position', [510 300 360 770] ...
+                'BorderWidth', 0, ... 
+                'Position',  mic.Utils.lt2lb([480 10 360 590], this.hFigure) ...
                 );
         
+               
+
             drawnow
         
             % Scan controls:
-            this.uitgScan.build(this.hFigure, 10, 815, 860, 280);
+            this.uitgScan.build(this.hFigure, 10, 610, 830, 310);
 
              % Scans:
             this.ss1D.build(this.uitgScan.getTabByIndex(1), 10, 10, 850, 230); 
@@ -3200,62 +3203,13 @@ end
                     dLeft, dAxisPos);
                 dAxisPos = dAxisPos + this.dMultiAxisSeparation;
             end
-
-
-            % build grating stage
-
-            % Build Hexapod
-            % dAxisPos = dAxisPos + 20;
-            % for k = 1:length(this.cHexapodAxisLabels)
-            %     this.uiDeviceArrayHexapod{k}.build(this.hpStageControls, ...
-            %         dLeft, dAxisPos);
-            %     dAxisPos = dAxisPos + this.dMultiAxisSeparation;
-            % end
-            % dAxisPos = dAxisPos + 20;
-            
-
-            % PPMac reticle and wafer
-            % dAxisPos = dAxisPos + 20;
-            % for k = 1:length(this.cReticleLabels)
-            %     this.uiDeviceArrayReticle{k}.build(this.hpStageControls, ...
-            %         dLeft, dAxisPos);
-            %     if (k == 3)
-            %         this.uipLRDisableZ = uipanel(...
-            %             'Parent', this.hpStageControls,...
-            %             'Units', 'pixels',...
-            %             'FontWeight', 'Bold',...
-            %             'Clipping', 'on',...
-            %             'BorderWidth',0, ...
-            %             'BackgroundColor',  [1 0.300 0.300, 0.3], ...
-            %             'Visible', 'off', ...
-            %             'Position', [dLeft, 5+ this.hpStageControls.Position(4) - dAxisPos - this.dMultiAxisSeparation...
-            %             , 25, 25] ...
-            %             );
-            %     end
-            %     if (k == 5)
-            %         dAxisPos = dAxisPos + this.dMultiAxisSeparation/2;
-            %     end
-            %     dAxisPos = dAxisPos + this.dMultiAxisSeparation;
-            % end
-            
-            % dAxisPos = dAxisPos + this.dMultiAxisSeparation/2;
-            % for k = 1:length(this.cWaferLabels)
-            %      this.uiDeviceArrayWafer{k}.build(this.hpStageControls, ...
-            %         dLeft, dAxisPos);
-            %     dAxisPos = dAxisPos + this.dMultiAxisSeparation;
-            % end
-            
-            % dAxisPos = dAxisPos + 15;
-            % % DMI/Wafer diode connect buttons and GetNumbers
-            
-            this.uicommWaferDoseMonitor.build(this.hpStageControls,  dLeft, dAxisPos - 7);
-            
-             
-             
             dAxisPos = dAxisPos + 20;
-            dAxisPos = dAxisPos +  this.dMultiAxisSeparation/2;
-            
-            this.uiDoseMonitor.build(this.hpStageControls, dLeft, dAxisPos);
+
+            dAxisPos = dAxisPos + 10;
+
+            this.uicommWaferDoseMonitor.build(this.hpStageControls,  dLeft, dAxisPos - 7);
+        
+            this.uiDoseMonitor.build(this.hpStageControls, dLeft + 215, dAxisPos - 20);
             
             % this.uiHSSimpleZ.build(this.hpStageControls, dLeft + 230, dAxisPos);
             
@@ -3277,28 +3231,31 @@ end
                 'FontWeight', 'Bold',...
                 'Clipping', 'on',...
                 'BorderWidth',0, ... 
-                'Position', [880 900 860 170] ...
+                'Position',  mic.Utils.lt2lb([SECOND_PANE_LEFT 10 860 170], this.hFigure) ...
             );
+
+           
             
             % Camera UI elements
+            SUB_PANE_LEFT = 500;
             this.uiDeviceCameraTemperature.build(this.hpCameraControls, 10, 40);            
             this.uiDeviceCameraExposureTime.build(this.hpCameraControls, 10, 70);
             
             this.uiCommPIMTECamera.build    (this.hpCameraControls, 10,  15);
             
-            this.uipBinning.build           (this.hpCameraControls, 545, 40, 70, 25);
-            this.uiButtonFocus.build        (this.hpCameraControls, 630, 50, 60,  25);
-            this.uiButtonAcquire.build      (this.hpCameraControls, 710, 50, 60,  25);
-            this.uiButtonStop.build         (this.hpCameraControls, 790, 50, 60,  25);
+            this.uipBinning.build           (this.hpCameraControls, SUB_PANE_LEFT + 10, 40, 70, 25);
+            this.uiButtonFocus.build        (this.hpCameraControls, SUB_PANE_LEFT + 100, 50, 60,  25);
+            this.uiButtonAcquire.build      (this.hpCameraControls, SUB_PANE_LEFT + 180, 50, 60,  25);
+            this.uiButtonStop.build         (this.hpCameraControls, SUB_PANE_LEFT + 760, 50, 60,  25);
             
-            this.uieImageName.build         (this.hpCameraControls, 180 + 370, 115, 200, 25);
-            this.uiButtonSaveImage.build    (this.hpCameraControls, 400 + 370, 130, 80, 20);
+            this.uieImageName.build         (this.hpCameraControls, SUB_PANE_LEFT + 10, 115, 150, 25);
+            this.uiButtonSaveImage.build    (this.hpCameraControls, SUB_PANE_LEFT + 170, 130, 80, 20);
            
-            this.uiButtonSetBackground.build(this.hpCameraControls,  630, 90, 95, 25);
-            this.uicbSubtractBackground.build(this.hpCameraControls, 730, 90, 120, 25);
+            this.uiButtonSetBackground.build(this.hpCameraControls,  SUB_PANE_LEFT + 100, 90, 95, 25);
+            this.uicbSubtractBackground.build(this.hpCameraControls, SUB_PANE_LEFT + 200, 90, 120, 25);
             
             
-            this.uipbExposureProgress.build(this.hpCameraControls, 10, 115, 200, 20);
+            this.uipbExposureProgress.build(this.hpCameraControls, 10, 115, 400, 20);
                   
             % Button colors:
             this.uiButtonAcquire.setText('Acquire')
