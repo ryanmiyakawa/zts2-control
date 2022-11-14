@@ -20,11 +20,16 @@ classdef Hardware < mic.Base
         
     properties (Constant)
         
-        
-      
-        cTcpipSmarActZP        = '192.168.20.24'
-        cTcpipSmarActGrating     = '192.168.20.25'
-        
+
+        cTcpipSmarActZP         = '192.168.20.24'
+        cTcpipSmarActGrating    = '192.168.20.25'
+
+        cGratingStageLocation   = 'network:sn:MCS2-00005705';
+        cWaferStageLocation     = 'network:sn:MCS2-00005706';
+        cDiodeStageLocation     = 'network:sn:MCS2-00005707';
+        cPinholeStageLocation   = 'network:sn:MCS2-00005708';
+        cTurningMirrorLocation  = 'network:sn:MCS2-00005709';
+
         
     end
     
@@ -79,19 +84,18 @@ classdef Hardware < mic.Base
     
         % Destructor
         function delete(this)
-%             
-%             this.disconnectWebSwitchEndstation();
-%             this.disconnectWebSwitchVis();
-            
+
+            this.commGratingStage = [];
+            this.commDiodeStage = [];
+            this.commPinholeStage = [];
+            this.commTurningMirrorStage = [];
+            this.commWaferStage = [];
+
             this.commGratingStage= [];
             this.commPIMTECamera = [];
             this.commZPStage = [];
             
         end
-        
-     
-   
-                
 
 
 
@@ -136,10 +140,6 @@ classdef Hardware < mic.Base
             end            
         end
 
-
-
-        
-        
         
         
         %% MF Drift Monitor (different than MfDriftMonitor Middleware)
@@ -222,10 +222,6 @@ classdef Hardware < mic.Base
         
         
         
-        
-        
-        
-        
         %% Init  functions
         % Initializes directories and any helper classes 
         function init(this)
@@ -234,46 +230,14 @@ classdef Hardware < mic.Base
             % for cwcork's cxro.met5.Instruments class
 
             % Hardware will load the following paths and genpaths on init:
-%             this.commRigolDG1000ZVirtual = rigol.DG1000ZVirtual();
-%             this.commKeithley6482WaferVirtual = keithley.Keithley6482Virtual();
-%             this.commKeithley6482ReticleVirtual = keithley.Keithley6482Virtual();
-%             this.commDeltaTauPowerPmacVirtual = deltatau.PowerPmacVirtual();
-%             this.commHydraWaferVirtual = pi.HydraVirtual();
-%             this.commDataTranslationVirtual = datatranslation.MeasurPointVirtual();
-%             this.commMfDriftMonitorVirtual = bl12014.hardwareAssets.virtual.MFDriftMonitor();
-%             this.commMfDriftMonitorMiddlewareVirtual = bl12014.hardwareAssets.virtual.MFDriftMonitorMiddleware(...
-%                 'clock', this.clock ...
-%             );
-%             this.commWebSwitchBeamlineVirtual = controlbyweb.WebSwitchVirtual();
-%             this.commWebSwitchEndstationVirtual = controlbyweb.WebSwitchVirtual();
-%             this.commWebSwitchVisVirtual = controlbyweb.WebSwitchVirtual();
-%             this.commBL1201CorbaProxyVirtual = bl12014.hardwareAssets.virtual.BL1201CorbaProxy();
-%             % this.commDCTCorbaProxyVirtual = bl12014.hardwareAssets.virtual.DCTCorbaProxy();
-%             this.commSmarActM141Virtual = bl12014.hardwareAssets.virtual.Stage();
-%             this.commSmarActVPFMVirtual = bl12014.hardwareAssets.virtual.Stage();
-%             this.commWagoD141Virtual = bl12014.hardwareAssets.virtual.WagoD141();
-%             this.commExitSlitVirtual = bl12014.hardwareAssets.virtual.BL12PicoExitSlit();
-%             this.commGalilD142Virtual = bl12014.hardwareAssets.virtual.Stage();
-%             this.commGalilM143Virtual = bl12014.hardwareAssets.virtual.Stage();
-%             this.commGalilVisVirtual = bl12014.hardwareAssets.virtual.Stage();
-%             
-%             
-%             this.commDCTWaferStageVirtual = bl12014.hardwareAssets.virtual.Stage();
-%             this.commDCTApertureStageVirtual = bl12014.hardwareAssets.virtual.Stage();
-%             
-%             this.commSR570DCT1Virtual = srs.SR570Virtual();
-%             this.commSR570DCT2Virtual = srs.SR570Virtual();
-% 
-%             this.commMightex1Virtual = mightex.UniversalLedControllerVirtual();
-%             this.commMightex2Virtual = mightex.UniversalLedControllerVirtual();
-%             
-%             this.commNPointM142Virtual = npoint.LC400Virtual();
-%             this.commNPointMAVirtual = npoint.LC400Virtual();
-%             
-%             this.commALSVirtual = cxro.ALSVirtual();
-%             
-%             this.commNewFocus8742M142Virtual = newfocus.Model8742Virtual();
-%             this.commNewFocus8742MAVirtual = newfocus.Model8742Virtual();
+
+            this.commDiodeStage = smaract.MCS2();
+            this.commWaferStage = smaract.MCS2();
+            this.commPinholeStage = smaract.MCS2();
+            this.commTurningMirrorStage = smaract.MCS2();
+            this.commGratingStage = smaract.MCS2();
+
+
         end
         
   

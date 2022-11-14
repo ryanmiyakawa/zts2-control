@@ -2,6 +2,7 @@
 	"dependencies":[
 		"ryan_toolbox",
 		"matlab_instrument_control",
-		"matlab_smaract_mcs"
+		"matlab_smaract_mcs",
+		"matlab_smaract_mcs2"
 	]
 }

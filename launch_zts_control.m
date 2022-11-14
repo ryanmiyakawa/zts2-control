@@ -18,7 +18,7 @@ cClock = mic.Clock('global_clock', dClockPeriod);
 hardware = hardware.Hardware('clock', cClock);
 
 
-app = lsicontrol.ui.LSI_Control('hardware', hardware);
+app = zts2control.ui.LSI_Control('hardware', hardware);
 
 
 
