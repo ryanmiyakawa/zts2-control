@@ -1,4 +1,6 @@
 % delete timers:
+delete(timerfind)
+
 if exist('purge', 'file')
     purge;
 end
@@ -18,7 +20,7 @@ cClock = mic.Clock('global_clock', dClockPeriod);
 hardware = hardware.Hardware('clock', cClock);
 
 
-app = zts2control.ui.LSI_Control('hardware', hardware);
+app = zts2control.ui.ZTS2_Control('hardware', hardware);
 
 
 
