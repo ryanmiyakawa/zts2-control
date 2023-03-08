@@ -14,6 +14,16 @@
 			"precision": 3
 		}
 	],
+	"stores": [
+        {
+            "name": "In",
+            "raw": 0
+        },
+        {
+            "name": "Out",
+            "raw": 1000
+        }
+    ],
 	"min": -10,
     "max": 10
 }	

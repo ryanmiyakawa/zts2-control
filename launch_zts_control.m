@@ -1,11 +1,13 @@
 % delete timers:
 delete(timerfind)
 
+
+mpm clearpath
+mpm addpath 
+
 if exist('purge', 'file')
     purge;
 end
-
-mpm addpath 
 
 % micpath:
 % First just get mic.Utils so we can have genpath_exclude:
